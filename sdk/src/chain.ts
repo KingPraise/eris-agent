@@ -36,13 +36,6 @@ export function makeClients(
   chainId: number,
   opts: { batch?: boolean } = {},
 ) {
-  if (
-    rpcUrl &&
-    !rpcUrl.includes("127.0.0.1") &&
-    !rpcUrl.includes("localhost")
-  ) {
-    CHAIN_MODE = "external";
-  }
   const chain = makeChain(chainId);
   // Widen the timeout because on an Arbitrum fork the GMX Reader / Aave reads are heavy.
   // batch=true enables (1) JSON-RPC array batching (same-tick requests into one HTTP) and
@@ -66,59 +59,11 @@ export function makeClients(
       // ERIS_RPC_HEADERS must be a JSON object of header name -> value; ignore if malformed
     }
   }
-  const fetchFn: typeof fetch = async (input, init) => {
-    if (init?.body && typeof init.body === "string" && init.body.includes("eth_fillTransaction")) {
-      try {
-        const parsed = JSON.parse(init.body) as unknown;
-        const makeErr = (id: unknown) => ({
-          jsonrpc: "2.0",
-          id: id ?? null,
-          error: { code: -32601, message: "Method not found: eth_fillTransaction is not available" },
-        });
-        if (Array.isArray(parsed)) {
-          const blocked = parsed.filter(
-            (item) => item && typeof item === "object" && (item as { method?: string }).method === "eth_fillTransaction",
-          ) as Array<{ id?: unknown }>;
-          const allowed = parsed.filter(
-            (item) => !item || typeof item !== "object" || (item as { method?: string }).method !== "eth_fillTransaction",
-          );
-          const blockedResponses = blocked.map((item) => makeErr(item.id));
-          if (allowed.length === 0) {
-            return new Response(JSON.stringify(blockedResponses), {
-              status: 200,
-              headers: { "content-type": "application/json" },
-            });
-          }
-          const upstreamRes = await fetch(input, {
-            ...init,
-            body: JSON.stringify(allowed),
-          });
-          const upstreamJson = (await upstreamRes.json()) as unknown;
-          const combined = Array.isArray(upstreamJson)
-            ? [...upstreamJson, ...blockedResponses]
-            : [upstreamJson, ...blockedResponses];
-          return new Response(JSON.stringify(combined), {
-            status: 200,
-            headers: { "content-type": "application/json" },
-          });
-        } else if (parsed && typeof parsed === "object" && (parsed as { method?: string }).method === "eth_fillTransaction") {
-          return new Response(JSON.stringify(makeErr((parsed as { id?: unknown }).id)), {
-            status: 200,
-            headers: { "content-type": "application/json" },
-          });
-        }
-      } catch {
-        // fall through to standard fetch
-      }
-    }
-    return fetch(input, init);
-  };
   const transport = http(rpcUrl, {
     timeout: 120_000,
     retryCount: 2,
     batch: opts.batch ? true : undefined,
     fetchOptions: Object.keys(headers).length ? { headers } : undefined,
-    fetchFn,
   });
   return {
     chain,
