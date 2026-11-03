@@ -218,7 +218,11 @@ function main(): void {
 
     mkdirSync(resolve(outPath, ".."), { recursive: true });
     rmSync(outPath, { force: true });
-    execFileSync("zip", ["-qr", outPath, "."], { cwd: stage });
+    try {
+      execFileSync("zip", ["-qr", outPath, "."], { cwd: stage, stdio: "ignore" });
+    } catch {
+      execFileSync("tar", ["-a", "-cf", outPath, "."], { cwd: stage });
+    }
     console.error(`[bundle] wrote ${outPath}`);
   } finally {
     rmSync(stage, { recursive: true, force: true });

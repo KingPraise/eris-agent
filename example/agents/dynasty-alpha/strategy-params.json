@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "regime": "unknown",
+  "weights": {
+    "ammArb": 1,
+    "pegArb": 0,
+    "liquidation": 0
+  },
+  "ammArb": {
+    "minGapBps": 12,
+    "sizeBps": 1000,
+    "slippageBps": 50,
+    "priorityFeeMult": 1
+  },
+  "pegArb": {
+    "minDiscountBps": 85,
+    "sizeBps": 500,
+    "slippageBps": 50,
+    "maxRedemptionFeeBps": 150
+  },
+  "liquidation": {
+    "maxHealthFactor": 0.995,
+    "minBonusBps": 300,
+    "priorityFeeMult": 5
+  },
+  "breaker": {
+    "maxGasToProfitRatio": 0.35,
+    "maxRevertRate": 0.35,
+    "cooldownBlocks": 12
+  }
+}

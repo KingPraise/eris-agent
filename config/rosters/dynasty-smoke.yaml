@@ -1,0 +1,26 @@
+# config/rosters/dynasty-smoke.yaml — Phase 1 smoke roster for dynasty-alpha.
+agents:
+  - id: noop
+    wallet: AUTO
+    baseline: true
+    description: does nothing (baseline benchmark)
+  - id: dynasty-alpha
+    wallet: AUTO
+    description: Tri-Modal Adaptive Regime Engine (params revision mode)
+  - id: dynasty-alpha-frozen
+    dir: dynasty-alpha
+    wallet: AUTO
+    env: { ERIS_AGENT_FROZEN: "1" }
+    description: Frozen control twin for dynasty-alpha
+  - id: my-arb
+    wallet: AUTO
+    env: { ERIS_AGENT_FROZEN: "1" }
+    description: Starter template baseline (frozen)
+  - id: venue-arb
+    wallet: AUTO
+    env: { ERIS_AGENT_FROZEN: "1" }
+    description: WETH cross-venue arbitrage opponent
+  - id: multi-arb
+    wallet: AUTO
+    env: { ERIS_AGENT_FROZEN: "1" }
+    description: Multi-base cross-venue arbitrage opponent

@@ -1,0 +1,16 @@
+# config/scenarios/dynasty-smoke.yaml — 12 official regimes x 1 seed for fast verification.
+regimes:
+  - calm
+  - cex-drift
+  - informed-flow
+  - whale
+  - lending-incident
+  - crash
+  - depeg
+  - vuln
+  - spike
+  - depeg-persist
+  - cdp-incident
+  - launch
+
+seeds: [101]

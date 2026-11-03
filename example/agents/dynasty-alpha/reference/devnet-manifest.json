@@ -1,0 +1,620 @@
+{
+    "schema":  "eris-environment-manifest/1",
+    "generatedAt":  "2026-10-22T06:40:13.301Z",
+    "status":  {
+                   "scored":  false,
+                   "label":  "practice",
+                   "note":  "Standings on this chain are practice standings. The competition is scored separately, from submitted bundles replayed over a scenario matrix (ADR 0017 / ADR 0020), and nothing here feeds into it."
+               },
+    "chain":  {
+                  "rpcUrl":  "https://ascon-rpc.nyx.foundation/",
+                  "readRpcUrl":  "https://ascon-rpc.nyx.foundation/",
+                  "chainId":  31337,
+                  "chainMode":  "anvil",
+                  "localDeploy":  true,
+                  "blockTimeSec":  2,
+                  "blockGasLimit":  320000000
+              },
+    "round":  {
+                  "intervalBlocks":  900,
+                  "epochBlocks":  900,
+                  "approxSeconds":  1800,
+                  "markMedianBlocks":  5,
+                  "scoreEvery":  1,
+                  "note":  "This is the evaluation interval (rules Â§0.1): every agent\u0027s value is recorded at each boundary and shown as interim progress. It is not what the score is computed over -- that is the epoch, whose first and last boundary give P (in the practice period, one day; see docs/guide/practice-devnet.md, Standings). A run\u0027s last boundary is its final block, the one where `blocksRemaining` reads 0 (in the practice period, the period\u0027s end rather than each day\u0027s); when the run is not a multiple of the interval, the final interval is the remainder. `epochBlocks` is `intervalBlocks` under its old name, kept until the results are published."
+              },
+    "period":  {
+                   "endsAt":  "2026-10-31T14:59:59.000Z",
+                   "blocks":  997770,
+                   "seconds":  3628800,
+                   "startBlock":  1413,
+                   "startedAt":  "2026-10-08T12:41:21.980Z",
+                   "dayHours":  24,
+                   "note":  "The run ends after `blocks` blocks counted from `startBlock`; `endsAt` is the date that count was converted from, and the fallback while the run has not started. `seconds` is a ceiling: a run with episodes stops on its block count. When `dayHours` \u003e 0 the standings score each day as one epoch, and day k ends at `startedAt` + (k + 1) x `dayHours` on the wall clock. The runtime turns these into `blocksRemaining` and `dayBlocksRemaining`."
+               },
+    "protocols":  [
+                      "uniswap",
+                      "balancer",
+                      "curve",
+                      "gmx",
+                      "aave",
+                      "lst",
+                      "liquity"
+                  ],
+    "actions":  {
+                    "uniswap":  [
+                                    "swap",
+                                    "mintLiquidity",
+                                    "removeLiquidity",
+                                    "collectFees",
+                                    "createPool"
+                                ],
+                    "balancer":  [
+                                     "balancerSwap"
+                                 ],
+                    "curve":  [
+                                  "curveSwap",
+                                  "stableSwap"
+                              ],
+                    "gmx":  [
+                                "gmxIncrease",
+                                "gmxDecrease"
+                            ],
+                    "aave":  [
+                                 "aaveSupply",
+                                 "aaveWithdraw",
+                                 "aaveBorrow",
+                                 "aaveRepay"
+                             ],
+                    "lst":  [
+                                "lstDeposit",
+                                "lstSwap",
+                                "lstRequestWithdraw",
+                                "lstClaimWithdraw"
+                            ],
+                    "liquity":  [
+                                    "liquityOpenTrove",
+                                    "liquityAdjustTrove",
+                                    "liquityCloseTrove",
+                                    "liquityRedeem",
+                                    "liquityProvideToSP",
+                                    "liquityWithdrawFromSP",
+                                    "liquityLiquidate",
+                                    "liquitySwapEusd"
+                                ]
+                },
+    "contracts":  {
+                      "multicall3":  "0x138dcaD3D08FdfC3C8652955b8c29DD02Ea070BC",
+                      "uniswap":  {
+                                      "poolWethUsdc500":  "0x24f7f1744a9fF6Da261bd6FCa8Ceda8cdbbCd73d",
+                                      "swapRouter":  "0x0f958dC97eabC0774006E45781dCbCEaCBCBdF2f",
+                                      "nonfungiblePositionManager":  "0xa7A0a6aC6d14f4965D4474bb269f290383e5642d",
+                                      "quoterV2":  "0x9B7e0263A354329AA97eAc09A6843EC3191d93E8",
+                                      "fee":  3000,
+                                      "tickSpacing":  60
+                                  },
+                      "balancer":  {
+                                       "vault":  "0x648Bff5787113E9930b9d033A65F0522b52486Bd",
+                                       "queries":  "0x16fBf19Bb2429D2D93CB22646A7401E0D67b15eE",
+                                       "pool":  "0x238A6a17807cfd8a5ccB231e43f8CC446ecB679d",
+                                       "poolId":  "0x238a6a17807cfd8a5ccb231e43f8cc446ecb679d000200000000000000000000",
+                                       "tokens":  [
+                                                      "0x04370d7F67549867eB93427B453FF5F6ceb0A27A",
+                                                      "0x4806ddDB48da9285EED230C907075861a50A75f4"
+                                                  ],
+                                       "usdcToken":  "0x04370d7F67549867eB93427B453FF5F6ceb0A27A",
+                                       "seedWethWei":  "100000000000000000000"
+                                   },
+                      "curve":  {
+                                    "pool":  "0x276BB5F80718eE31A29e75c7247ff455e719565A",
+                                    "wethIndex":  1,
+                                    "usdtIndex":  0,
+                                    "usdcToken":  "0x04370d7F67549867eB93427B453FF5F6ceb0A27A"
+                                },
+                      "gmx":  {
+                                  "RoleStore":  "0x32C310A5Aaf599C5F2d716B51407a5DDDf8964BD",
+                                  "DataStore":  "0xF51a10A191Ba0b1857478F905be65A9d2DD12696",
+                                  "Oracle":  "0xFe7B33310992e658D7791758839D3460F85187Ef",
+                                  "EventEmitter":  "0x7c6F8b352B4f6844DdbdA01AdBEE825ec6C94649",
+                                  "Router":  "0xd9109d6891fC320F8D49E7887453F11efB504306",
+                                  "ExchangeRouter":  "0xcd907E3C54D2f2824c3DC22516fF0c7a6b171e64",
+                                  "OrderHandler":  "0xcA189BaC851f04a4A73a3750d2f66B68193d53C7",
+                                  "OrderVault":  "0x463254070D3f1618286767dca64C8E9336cBa776",
+                                  "LiquidationHandler":  "0xfa1dd08a5597C87b19D664959aecdC60D843887f",
+                                  "Reader":  "0x4116C64494b4C359Ee3209f6C8ACde257432f9B6",
+                                  "Config":  "0x44e78b4FEcfF638Fda37d737Bd08C3843007608B",
+                                  "markets":  {
+                                                  "ETH_USD":  "0x20B275813A9048bE8B29A8dC73FCD9EdC7b2A10F"
+                                              }
+                              },
+                      "aave":  {
+                                   "PoolAddressesProvider":  "0x313147967b7E6753BE7D732A3a69C7a8832962Fc",
+                                   "Pool":  "0x2978556fFBF5946f3A6e08174FCB29939206157F",
+                                   "AaveOracle":  "0xc83C05e35DE2d621f1AB332ECe7b0F14a9f3F3c3",
+                                   "AclAdmin":  "0x3d05E3979a2dB7E8980B3A5Aa0D535c442676fBF",
+                                   "AclManager":  "0x2D79fb26DD50395B06bCCdF17D1F5fBF7E4dB538",
+                                   "PoolDataProvider":  "0x28Cf22d66CbABbf622e00aBB140fF152C3FFF1D7"
+                               },
+                      "lst":  {
+                                  "vault":  "0x1917f4727A7Cc440B0AB2ac55A87c0Bd4A0C265c",
+                                  "lstToken":  "0x1917f4727A7Cc440B0AB2ac55A87c0Bd4A0C265c",
+                                  "asset":  "0x4806ddDB48da9285EED230C907075861a50A75f4",
+                                  "pool":  "0x31125021cdB3978C3d60e546Ad4C36c7BCDDA3E3",
+                                  "poolLstIndex":  1,
+                                  "poolWethIndex":  0,
+                                  "simulatedSecondsPerBlock":  3600,
+                                  "targetApyBps":  300,
+                                  "withdrawalDelayBlocks":  24,
+                                  "aaveAggregator":  "0xcB6AC54Fa67cab9040168456c062A0B47a084F67",
+                                  "aaveAToken":  "0xD2255a60e1741C1f589dCCd331B369AD37CeeB76",
+                                  "aaveVariableDebtToken":  "0x098dA64fDCCFF6a9aEd6f5FaF869DAE13b8B5689"
+                              },
+                      "liquity":  {
+                                      "troveManager":  "0x580a815b04ebfb9CC2d5840046d0b31f3BEc469d",
+                                      "borrowerOperations":  "0xA2a8d1cFf69ea6279199C678C1977d8c5F882650",
+                                      "stabilityPool":  "0x471157c23dE505D6Bcc7708B72B858F1719f94bD",
+                                      "sortedTroves":  "0x2026283B8acB4419e325e639841B23c0dBb7153E",
+                                      "activePool":  "0xd1edeA127D1bd9FCA6d291dDF543E4d3DE9A27E4",
+                                      "defaultPool":  "0xdF2Fa95A51060FF34a9464B8E1A004Bd3fbb3845",
+                                      "collSurplusPool":  "0x0Ef27DF1F5d7B8Dfde6E92bc34f8b59C4D7f52DA",
+                                      "gasPool":  "0x5d09ccD6E6aD250E81d1D7AE70F5dA49f52f273F",
+                                      "hintHelpers":  "0xeb33828d2640e183709e79f03F2bb48c65742C22",
+                                      "priceFeed":  "0x1ea9Fa5faf998C144d86bd1436E433E5ebe3c348",
+                                      "redemptionHelper":  "0xd34B0AaE77a55F6F58AD76292Ff7B1Dd0C0226C8",
+                                      "eusd":  "0x1473b34f6feDBe32818Af2b61736F4dc347465e5",
+                                      "lqtyToken":  "0x74bA59d93701ebEDbA85a3adAd70Ef77004Ac1A1",
+                                      "lqtyStaking":  "0x642002a1a7D516fFB66AdFA9933f5c531140823e",
+                                      "communityIssuance":  "0x982F3b800bA59e6aF7a6B60a2807AeA382A18442",
+                                      "eusdUsdcPool":  "0x7c4a04d249D48f09861C18c491F83E7f40553De9",
+                                      "eusdIndex":  0,
+                                      "usdcIndex":  1,
+                                      "stable":  "0x04370d7F67549867eB93427B453FF5F6ceb0A27A"
+                                  },
+                      "stableMarkets":  {
+                                            "EUSD":  {
+                                                         "pool":  "0x7c4a04d249D48f09861C18c491F83E7f40553De9",
+                                                         "stableIndex":  0,
+                                                         "quoteIndex":  1,
+                                                         "venue":  "liquity"
+                                                     },
+                                            "DAI":  {
+                                                        "pool":  "0x84a0Ed603A6E58EE30A7B458E199384F22Df7E8F",
+                                                        "stableIndex":  1,
+                                                        "quoteIndex":  0,
+                                                        "venue":  "curve"
+                                                    }
+                                        },
+                      "priceFeed":  "0x08a1ed96bd7e876b9a964334cd31ad2ead15609d"
+                  },
+    "tokens":  {
+                   "WETH":  {
+                                "address":  "0x4806ddDB48da9285EED230C907075861a50A75f4",
+                                "decimals":  18,
+                                "kind":  "base"
+                            },
+                   "WBTC":  {
+                                "address":  "0x1645E05b9061D79D47f208D1f3A6E8DA20800e07",
+                                "decimals":  8,
+                                "kind":  "base"
+                            },
+                   "USDC":  {
+                                "address":  "0x04370d7F67549867eB93427B453FF5F6ceb0A27A",
+                                "decimals":  6,
+                                "kind":  "stable"
+                            },
+                   "DAI":  {
+                               "address":  "0xF02dd180B9a072c84C5e34207307c7cbD4Ec4D43",
+                               "decimals":  18,
+                               "kind":  "stable"
+                           },
+                   "EUSD":  {
+                                "address":  "0x1473b34f6feDBe32818Af2b61736F4dc347465e5",
+                                "decimals":  18,
+                                "kind":  "stable"
+                            }
+               },
+    "limits":  {
+                   "orderSize":  "none",
+                   "note":  "No per-order size cap, no bundle-length cap and no open-position cap on any venue. A trade is bounded by your balance and by the depth you are trading into.",
+                   "defaultPriorityFeeWei":  "100000000",
+                   "maxPriorityFeeWei":  "none",
+                   "economicGas":  true,
+                   "feeRule":  "Sign maxFeePerGas equal to maxPriorityFeePerGas (never above it), and at most your balance allows; a legacy gasPrice counts as both. Blocks are ordered by maxFeePerGas and a transaction pays min(maxFeePerGas, tip), so a maxFeePerGas above the tip would buy position without paying for it. The RPC gateway refuses such a transaction; one sent another way is flagged as a violation after the run."
+               },
+    "funding":  {
+                    "ethWei":  "1000000000000000000",
+                    "wethWei":  "8000000000000000000",
+                    "usdcUnits":  "25000000000",
+                    "wbtcUnits":  "40000000"
+                },
+    "episodes":  {
+                     "kinds":  [
+                                   {
+                                       "type":  "crash",
+                                       "count":  23
+                                   },
+                                   {
+                                       "type":  "liquidityPull",
+                                       "count":  46
+                                   },
+                                   {
+                                       "type":  "spike",
+                                       "count":  23
+                                   },
+                                   {
+                                       "type":  "cexDrift",
+                                       "count":  23
+                                   },
+                                   {
+                                       "type":  "flowTrend",
+                                       "count":  23
+                                   },
+                                   {
+                                       "type":  "whale",
+                                       "count":  46
+                                   },
+                                   {
+                                       "type":  "depeg",
+                                       "count":  23
+                                   },
+                                   {
+                                       "type":  "eusdDepeg",
+                                       "count":  23
+                                   }
+                               ],
+                     "note":  "Kinds and counts are published; when each window opens is not (ADR 0021 Â§1). Read the chain, not this list, to know whether one is open now."
+                 },
+    "participants":  [
+                         {
+                             "id":  "noop",
+                             "address":  "0xF0fb18a926C2c4A0Aeb1a9DE59cb10Fc2Abb7B8c",
+                             "external":  false,
+                             "baseline":  true,
+                             "description":  "does nothing â€” the benchmark every score is excess over"
+                         },
+                         {
+                             "id":  "random",
+                             "address":  "0x8Ddc697308a433dE459E9dfd2b04823e087da6bE",
+                             "external":  false,
+                             "baseline":  false,
+                             "description":  "trades at random, deterministically seeded â€” the lower control, so \"below the baseline\" is visibly reachable and not just a rounding artefact"
+                         },
+                         {
+                             "id":  "venue-arb",
+                             "address":  "0x58DE1aD1e90e941C5C93a4b4C29c40fB5cBecb2c",
+                             "external":  false,
+                             "baseline":  false,
+                             "description":  "WETH-only cross-venue arbitrage â€” the simplest thing that works, and the line most first submissions are really competing with"
+                         },
+                         {
+                             "id":  "clean-arb",
+                             "address":  "0xe98f0FEAe176609E42A694AAd962C615a6396eeA",
+                             "external":  false,
+                             "baseline":  false,
+                             "description":  "two-leg round trip priced against fees, impact and expected adverse move (no prompt.md â€” a pure rule strategy, nothing to freeze)"
+                         },
+                         {
+                             "id":  "multi-arb",
+                             "address":  "0xB2358a8Ae606543D91341eCE82b75FB24526Cde3",
+                             "external":  false,
+                             "baseline":  false,
+                             "description":  "base-agnostic cross-venue arbitrage (all active bases Ã— all venues)"
+                         },
+                         {
+                             "id":  "peg-arb",
+                             "address":  "0xD097192e62800AB8aafDf368DE21b73AE839D2cA",
+                             "external":  false,
+                             "baseline":  false,
+                             "description":  "stablecoin peg arbitrage â€” the EUSD/DAI side, which the liquity venue supplies"
+                         },
+                         {
+                             "id":  "lst-carry",
+                             "address":  "0xc2be9bCD220ac9BDbE7867815F6C51C39Ca24AA5",
+                             "external":  false,
+                             "baseline":  false,
+                             "description":  "the LST vault\u0027s carry, so the lst venue has someone reading it"
+                         },
+                         {
+                             "id":  "basis-arb",
+                             "address":  "0xFF7a5C9f5E4839a124c63c844aD66BF434552cFC",
+                             "external":  false,
+                             "baseline":  false,
+                             "description":  "spot against the GMX perp, so the gmx venue has someone reading it"
+                         },
+                         {
+                             "id":  "levered-long",
+                             "address":  "0x1D918037e75F177574F237a7C067cbf930019b7d",
+                             "external":  false,
+                             "baseline":  false,
+                             "description":  "borrows on Aave against its collateral to hold more WETH than it was funded with"
+                         },
+                         {
+                             "id":  "ops-canary",
+                             "address":  "0xf698d63D2d7fa008fa4BdD287CA9E0B7a7eb4033",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "the operator\u0027s heartbeat, run outside the box (infra/devnet/CHECKLIST.md 2.2)",
+                             "participant":  "operator"
+                         },
+                         {
+                             "id":  "curiosity_bot",
+                             "address":  "0x2682CEFfb66396681563EE8283F4B354b57cdE13",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-09-28"
+                         },
+                         {
+                             "id":  "teemo",
+                             "address":  "0x589051f1c3a49012F0ae195573713C9312E9A182",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-09-28"
+                         },
+                         {
+                             "id":  "corki",
+                             "address":  "0x7B4113C716F658c295Bd240b892c9F424EA1bCa6",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-09-28"
+                         },
+                         {
+                             "id":  "noah",
+                             "address":  "0xcA341CE4902756bF9e96e145014DD0aB36A0Fe8E",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-09-29"
+                         },
+                         {
+                             "id":  "devbuilds",
+                             "address":  "0xC664a8Ecd8c55f21DD86d6Fa5638B51De3287198",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-09-29"
+                         },
+                         {
+                             "id":  "at",
+                             "address":  "0x813Fdd41688A057C77eBd1C5A09Fe93D53FDD4ba",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-09-29"
+                         },
+                         {
+                             "id":  "onebridge-core",
+                             "address":  "0x4C8a28910Ec182906cA53857F2a4FcaE85D9AE11",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-09-30"
+                         },
+                         {
+                             "id":  "jk",
+                             "address":  "0x6F5A43Bf036f3760A88d216cdC1ec91261DFe1cE",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-09-30"
+                         },
+                         {
+                             "id":  "sophie555-safe",
+                             "address":  "0xd8119D87C70484dD6F9737c4a4158C3252513A27",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-01"
+                         },
+                         {
+                             "id":  "tokui-arb-v15",
+                             "address":  "0xF1532686CB19637D4c9F6E41a4D871574778A459",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-01"
+                         },
+                         {
+                             "id":  "suzu19",
+                             "address":  "0x29046535397D7a81c384d40A9BCdD62A3cD172ce",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-01"
+                         },
+                         {
+                             "id":  "shoheyhey53",
+                             "address":  "0x2633DdCB442B0Ef8a782f3b8CdF4B226a39626bB",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-02"
+                         },
+                         {
+                             "id":  "aobathree-practice",
+                             "address":  "0x506B31f7A0e206A867E3C70505c72dA8ABFd86B9",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-02"
+                         },
+                         {
+                             "id":  "guarded-spot-py",
+                             "address":  "0xF76609500F454605c4DCa7eA2a0A67005D97133A",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-03"
+                         },
+                         {
+                             "id":  "masa-ascon",
+                             "address":  "0xFe80ebdD383Ae8a789276d3220066B62940f7865",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-03"
+                         },
+                         {
+                             "id":  "nitorikumi",
+                             "address":  "0x04d15670B375377654c649A5A7139F3b4A17fC02",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-05"
+                         },
+                         {
+                             "id":  "toyosawa",
+                             "address":  "0xC3842c27D98CBAC7E806a82fe8C5D5276B9F733a",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-05"
+                         },
+                         {
+                             "id":  "nnnky_",
+                             "address":  "0x11E87c619c5612Bb71227cff3de8d279DA915c0C",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-06"
+                         },
+                         {
+                             "id":  "noah-arb",
+                             "address":  "0x3C6469a5FF0a0a9B8f28cB57C78f63e35298191e",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-07"
+                         },
+                         {
+                             "id":  "nyx-agent",
+                             "address":  "0x90932227cB9C00f40E8Ca685801671F6fEE49a1E",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-08"
+                         },
+                         {
+                             "id":  "doraking",
+                             "address":  "0xC9BC00A6cfb4EeECE3088e566b8068EA425Db276",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-08"
+                         },
+                         {
+                             "id":  "asano",
+                             "address":  "0x1e131D864A1Ea00DFE45cABeE41e4a5014967c2D",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-08"
+                         },
+                         {
+                             "id":  "blue-eng",
+                             "address":  "0x170b5bFED48ad6B3E16dF08319CEeBacEc1cf08c",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-08"
+                         },
+                         {
+                             "id":  "nyx-maker",
+                             "address":  "0x1DF564A7eF13deD65f451fbBa5CA9B85120b3e0b",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-10"
+                         },
+                         {
+                             "id":  "hamham55-bot",
+                             "address":  "0xd8EC9Bd1718df05EF79C5dE544Be6281dEc20868",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-10"
+                         },
+                         {
+                             "id":  "ryuru_",
+                             "address":  "0x8f72EBaa1E2919484b9d207f1b7db0752bdf26a1",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-11"
+                         },
+                         {
+                             "id":  "Kinuma",
+                             "address":  "0xDA281D42d1d13CD177d4F4c8bf5ec2Aa1DEfBaB7",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-11"
+                         },
+                         {
+                             "id":  "tomato-arb",
+                             "address":  "0x154498eA0129f5b052661189f64446D083c73d91",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-12"
+                         },
+                         {
+                             "id":  "yoshihisa",
+                             "address":  "0x7BA0224eD7F1c91dcC2E21c0Eb39b0c86304E0cB",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-14"
+                         },
+                         {
+                             "id":  "peanuts",
+                             "address":  "0x7B8B39c0Dd01b18daAa7F046b064505415E74cA5",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-16"
+                         },
+                         {
+                             "id":  "nyx-alpha",
+                             "address":  "0x1424F3da1FF14e99659392b95D05d0A5E2F8e1f3",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-16"
+                         },
+                         {
+                             "id":  "soh",
+                             "address":  "0xEAd5C7ACe6A0dcaECb163F2cF64b8da4eF4b76A5",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-16"
+                         },
+                         {
+                             "id":  "nemophilax",
+                             "address":  "0xdf6eF19B7D02a6dEaa4b780e307fAE814DfAcF85",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-16"
+                         },
+                         {
+                             "id":  "toushibu_1",
+                             "address":  "0x03c1EC4328a6AFff244CD8A3cfAF6e37923C5d41",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-17"
+                         },
+                         {
+                             "id":  "roge-mega",
+                             "address":  "0xdc9305B9A5BD299FE226a0Bf4764aC58EcE2A0AF",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-18"
+                         },
+                         {
+                             "id":  "toushibu_2",
+                             "address":  "0xfEaDCA4D0e68e006a22945A1b2048169d3fa7983",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-18"
+                         },
+                         {
+                             "id":  "Sennichi-1",
+                             "address":  "0x500BcC911a74Fa081eE03FBF387E0E4660C96e83",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-20"
+                         },
+                         {
+                             "id":  "yuu-1",
+                             "address":  "0xEE6Df73E15C7FABB9E1b34709efc94A9a9748a09",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-20"
+                         },
+                         {
+                             "id":  "toushibu_3",
+                             "address":  "0xB9c0db8f60deAF755132829Ad82Eaa7b7cC037b9",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-20"
+                         },
+                         {
+                             "id":  "apolotary-ascon",
+                             "address":  "0xBe583081a972cFE9D39668674a8e923E4D5cfD96",
+                             "external":  true,
+                             "baseline":  false,
+                             "description":  "registered 2026-10-22"
+                         }
+                     ]
+}
