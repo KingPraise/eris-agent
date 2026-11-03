@@ -306,14 +306,14 @@ export function evaluateAmmArb(
       venues.push({
         swapType: "balancerSwap",
         price: p.balancer.priceUsdcPerWeth,
-        feeBps: p.balancer.swapFeeBps ?? 30,
+        feeBps: (p.balancer as { swapFeeBps?: number }).swapFeeBps ?? 30,
       });
     }
     if (p.curve) {
       venues.push({
         swapType: "curveSwap",
         price: p.curve.priceUsdcPerWeth,
-        feeBps: p.curve.feeBps ?? 4,
+        feeBps: (p.curve as { feeBps?: number }).feeBps ?? 4,
       });
     }
   }

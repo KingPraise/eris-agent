@@ -59,11 +59,10 @@ export function decide(
       return { type: "noop", reason: "malformed observation" };
     }
 
+    const _ctx = ctx || {};
     const rawActiveParams =
-      (ctx &&
-        typeof ctx === "object" &&
-        (Reflect.get(ctx, "__dynastyParams") ||
-          (ctx.config && typeof ctx.config === "object" && Reflect.get(ctx.config, "__dynastyParams")))) ||
+      Reflect.get(_ctx, "__dynastyParams") ||
+      (Reflect.get(_ctx, "config") && Reflect.get(Reflect.get(_ctx, "config"), "__dynastyParams")) ||
       PARAMS;
     const activeParams = clampSafetyParams(rawActiveParams);
     let vmState = Reflect.get(Object, "__DYNASTY_VM_STATE__");
@@ -399,11 +398,16 @@ export function decide(
             regime = "lending-incident";
           } else {
             const p = obs.protocols || {};
-            const prices = [
+            const prices = [];
+            const rawPrices = [
               p.uniswap && p.uniswap.pool && p.uniswap.pool.priceUsdcPerWeth,
               p.balancer && p.balancer.priceUsdcPerWeth,
               p.curve && p.curve.priceUsdcPerWeth,
-            ].filter((x) => typeof x === "number" && x > 0);
+            ];
+            for (let i = 0; i < rawPrices.length; i++) {
+              const pr = rawPrices[i];
+              if (typeof pr === "number" && pr > 0) prices.push(pr);
+            }
             if (prices.length >= 2 && (Math.max(...prices) / Math.min(...prices) - 1) * 10000 >= 250) {
               regime = "whale";
             } else {
@@ -552,7 +556,7 @@ export function decide(
         }
 
         // WETH single-leg
-        const p = obs.protocols || {};
+        const p = Reflect.get(obs, "protocols") || {};
         const wethView = views.find((vw) => vw.base === "WETH");
         const venues = [];
         if (effParams.ammArb.minGapBps >= 40 && wethView && wethView.venues.length > 0) {
@@ -562,10 +566,10 @@ export function decide(
             venues.push({ swapType: "swap", price: p.uniswap.pool.priceUsdcPerWeth, feeBps: p.uniswap.pool.fee ? p.uniswap.pool.fee / 100 : 30 });
           }
           if (p.balancer) {
-            venues.push({ swapType: "balancerSwap", price: p.balancer.priceUsdcPerWeth, feeBps: p.balancer.swapFeeBps || 30 });
+            venues.push({ swapType: "balancerSwap", price: p.balancer.priceUsdcPerWeth, feeBps: Reflect.get(p.balancer, "swapFeeBps") || 30 });
           }
           if (p.curve) {
-            venues.push({ swapType: "curveSwap", price: p.curve.priceUsdcPerWeth, feeBps: p.curve.feeBps || 4 });
+            venues.push({ swapType: "curveSwap", price: p.curve.priceUsdcPerWeth, feeBps: Reflect.get(p.curve, "feeBps") || 4 });
           }
         }
 
@@ -1114,13 +1118,12 @@ export function decide(
       if (!liqAdded && p.aave && !activeWethCrashSell) {
         const rawHf = p.aave.healthFactor || "";
         const hf = rawHf.includes(".") ? Number(rawHf) : Number(rawHf) / 1e18;
+        const _ctx = ctx || {};
         const victimEnv =
           typeof process !== "undefined" && process.env && process.env.ERIS_LIQUIDATION_VICTIMS
             ? process.env.ERIS_LIQUIDATION_VICTIMS
-            : (ctx &&
-                typeof ctx === "object" &&
-                (Reflect.get(ctx, "__victimEnv") ||
-                  (ctx.config && typeof ctx.config === "object" && Reflect.get(ctx.config, "__victimEnv")))) ||
+            : (Reflect.get(_ctx, "__victimEnv") ||
+                (Reflect.get(_ctx, "config") && Reflect.get(Reflect.get(_ctx, "config"), "__victimEnv"))) ||
               "";
         const targetVictim = String(victimEnv).split(",").map((s) => s.trim()).filter(Boolean)[0];
         if (targetVictim && Number.isFinite(hf) && hf > 0 && hf < effParams.liquidation.maxHealthFactor) {
@@ -1227,7 +1230,11 @@ export function decide(
       return { type: "noop", reason: ammNoopReason };
     }
 
-    candidates.sort((a, b) => b.expectedEdgeBps * w[b.module] - a.expectedEdgeBps * w[a.module]);
+    candidates.sort((a, b) => {
+      const wB = Number(Reflect.get(w, b.module)) || 1;
+      const wA = Number(Reflect.get(w, a.module)) || 1;
+      return b.expectedEdgeBps * wB - a.expectedEdgeBps * wA;
+    });
     return JSON.parse(JSON.stringify(candidates[0].action));
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
